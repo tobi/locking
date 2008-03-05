@@ -1,0 +1,26 @@
+Locking
+=======
+
+Very simple plugin which adds the aquire_lock method to active record base. This is mysql only.
+
+As long as a lock of a certain name is acquired no other connection on the server is able to aquire the same lock. 
+This is very useful for background tasks such as billing or search server re-indexing which would cause errors when they 
+would be ran from multiple machines at the same time but you still want to run them from multiple machines at the same time 
+for redundancy reasons. 
+
+Example
+=======
+                                                                                                                              
+Invoice.aquire_lock("Shopify billing") do
+
+  Invoice.find_all_due.each { |invoice| invoice.collect_payment! } 
+  
+end
+
+
+Usecase
+=======
+                    
+# save to run on several machines at the same time: 
+ 
+ ./script/runner 'Invoice.aquire_lock("Shopify billing") {  Invoice.find_all_due.each { |invoice| invoice.collect_payment! } }'
