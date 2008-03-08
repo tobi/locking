@@ -11,8 +11,8 @@ module Locking
     
   module ClassMethods
     
-    # Aquires an application level lock in the mysql server. 
-    def aquire_lock(lock_name = table_name, wait_timeout = 0)
+    # acquires an application level lock in the mysql server. 
+    def acquire_lock(lock_name = table_name, wait_timeout = 0)
       case c = connection.select_value("SELECT GET_LOCK(#{quote_value(lock_name)}, #{quote_value(wait_timeout)})")
       when '1' 
         yield if block_given?
@@ -28,10 +28,10 @@ module Locking
       connection.select_one("SELECT RELEASE_LOCK(#{quote_value(lock_name)})")
     end
     
-    # Aquires an application level lock in the mysql server. Throws Locking::LockTimeout if the 
-    # lock cannot be aquired.
-    def aquire_lock!(lock_name = table_name, wait_timeout = 0, &block)
-      aquire_lock(lock_name, table_name, &block) or raise LockTimeout, 'Timeout waiting for lock'
+    # acquires an application level lock in the mysql server. Throws Locking::LockTimeout if the 
+    # lock cannot be acquired.
+    def acquire_lock!(lock_name = table_name, wait_timeout = 0, &block)
+      acquire_lock(lock_name, table_name, &block) or raise LockTimeout, 'Timeout waiting for lock'
     end
     
   end
